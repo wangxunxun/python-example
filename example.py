@@ -13,7 +13,6 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 
 from dialog import *
-from qtmethond import *
 from findandreplace import *
 import findandreplace
 
