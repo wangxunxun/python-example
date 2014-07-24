@@ -15,6 +15,7 @@ from PySide.QtGui import *
 from dialog import *
 from findandreplace import *
 import findandreplace
+import feedbackusdialog
 
 
 
@@ -42,8 +43,10 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         setproxy = QtGui.QAction('setproxy', self)
         setproxy.triggered.connect(self.setproxy)
         
-        feedback = QtGui.QAction('feedback', self)
-        feedback.triggered.connect(self.feedbacktous)
+        feedbacktous = QtGui.QAction('feedback', self)
+        feedbacktous.triggered.connect(self.feedbacktous)
+        
+        feedbacktous1 = self.createAction('feedbacktus1', self.feedbacktous1)
         
         pretest = QtGui.QAction('pretest', self)
         pretest.setStatusTip('ziti')
@@ -68,8 +71,9 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         
         fileMenu.addAction(exitAction)
         fileMenu.addAction(setproxy)
-        fileMenu.addAction(feedback)
+        fileMenu.addAction(feedbacktous)
         fileMenu.addAction(findandreplace)
+        fileMenu.addAction(feedbacktous1)
         
         testmenu.addAction(pretest)
         testmenu.addAction(zuozhe)
@@ -116,6 +120,10 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         
     def feedbacktous(self):
         dialog = feedbacktous()
+        dialog.exec_()
+        
+    def feedbacktous1(self):
+        dialog = feedbackusdialog.FeedbackusDidalog()
         dialog.exec_()
         
     def ziti(self):
