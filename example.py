@@ -16,6 +16,7 @@ from dialog import *
 from findandreplace import *
 import findandreplace
 import feedbackusdialog
+import aboutdialog
 
 
 
@@ -40,6 +41,7 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         exitAction = self.createAction('&New', self.exit, 'Ctrl+N')
         findandreplace = self.createAction('findandreplace', self.findandreplace)
         
+        
         setproxy = QtGui.QAction('setproxy', self)
         setproxy.triggered.connect(self.setproxy)
         
@@ -47,6 +49,7 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         feedbacktous.triggered.connect(self.feedbacktous)
         
         feedbacktous1 = self.createAction('feedbacktus1', self.feedbacktous1)
+        aboutdialog = self.createAction('about', self.aboutdialog)
         
         pretest = QtGui.QAction('pretest', self)
         pretest.setStatusTip('ziti')
@@ -80,6 +83,7 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
                 
         helpmenu.addAction(help)
         helpmenu.addAction(calculator)
+        helpmenu.addAction(aboutdialog)
         
         filetoolbar = self.addToolBar("file")
         filetoolbar.addAction(exitAction)
@@ -124,6 +128,10 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         
     def feedbacktous1(self):
         dialog = feedbackusdialog.FeedbackusDidalog()
+        dialog.exec_()
+        
+    def aboutdialog(self):
+        dialog = aboutdialog.AboutDialog()
         dialog.exec_()
         
     def ziti(self):
