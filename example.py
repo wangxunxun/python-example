@@ -24,7 +24,7 @@ import feedbackusdialog
 
 
 
-
+##试试
 
 class Example(QtGui.QMainWindow, Ui_Dialog):    
     def __init__(self):
