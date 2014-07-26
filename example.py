@@ -5,7 +5,7 @@ Created on 2014-7-23
 
 @author: xun
 '''
-# -*- coding: GBK -*-   
+
 import sys
 
 from PySide import QtGui,QtCore
