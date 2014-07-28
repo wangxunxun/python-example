@@ -77,5 +77,49 @@ class FeedbackusDidalog(QtGui.QDialog):
         mainlayout.addLayout(okLayout, 4, 0, 1, 4)
 
         self.setLayout(mainlayout)
+        self.okButton.clicked.connect(self.getFormData)
+        
+    def getFormData(self):
 
+        name = self.nameLineEdit.text()
+        email = self.emailLineEdit.text()
+        telephone = self.telephoneLineEdit.text()
+        im = self.imLineEdit.text()
+        feedback = self.feedbackTextEdit.toPlainText().rstrip()
+        if len(feedback) == 0:
+            self.errorTipLable.setText(self.tr("Feedback is required."))
+            self.errorTipLable.show()
+        elif len(name) > 10:
+            self.errorTipLable.setText(self.tr('The len of name should be less than "100".'))
+            self.errorTipLable.show()
+        elif len(email) > 10:
+            self.errorTipLable.setText(self.tr('The len of email should be less than "100".'))
+            self.errorTipLable.show()
+        elif len(telephone) > 10:
+            self.errorTipLable.setText(self.tr('The len of telephone should be less than "100".'))
+            self.errorTipLable.show()
+        elif len(im) > 10:
+            self.errorTipLable.setText(self.tr('The len of im should be less than "100".'))
+            self.errorTipLable.show()
+        elif len(feedback) > 100:
+            self.errorTipLable.setText(self.tr('The len of feedback should be less than "1000".'))
+            self.errorTipLable.show()
+        else:
+            self.feedbackinfo = {
+                "name": name,
+                "email": email,
+                "telephone": telephone,
+                "im": im,
+                "feedback": feedback
+            }
+            if len(feedback) == 0:
+                self.errorTipLable.show()
+            else:
+                import threading
+                t = threading.Thread(target=self.pushMsg, args=())  
+                t.setDaemon(False)
+                t.start()
+
+                self.errorTipLable.setText(self.tr("Waiting..."))
+                self.errorTipLable.show()
 
