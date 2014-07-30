@@ -60,7 +60,7 @@ class Example(QtGui.QMainWindow, Ui_Dialog):
         zuozhe.triggered.connect(self.zuozhe)
                 
         help = QtGui.QAction('help', self)
-        help.setStatusTip('heip')
+        help.setStatusTip('help')
         help.triggered.connect(self.help)
                 
         calculator = QtGui.QAction('calculator', self)
