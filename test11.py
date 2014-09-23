@@ -15,8 +15,8 @@ from time import sleep
 
 class Test11(unittest.TestCase):
     def setUp(self):
-        self.driver = webdriver.Firefox()
-#        self.driver = webdriver.Chrome()
+#        self.driver = webdriver.Firefox()
+        self.driver = webdriver.Chrome('F:\chromedriver.exe')
         self.driver.implicitly_wait(30)
         self.base_url = "http://42.96.155.222:8888/"
         self.verificationErrors = []
@@ -49,8 +49,8 @@ class Test11(unittest.TestCase):
            
 
             try:
-                '#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button' == g
-#                self.driver.find_element_by_css_selector(g).click()
+                print '#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(8) > td:nth-child(7) > button' == g
+                return self.driver.find_element_by_css_selector(g)
 
                 print g
                 break
@@ -72,9 +72,9 @@ class Test11(unittest.TestCase):
         driver.find_element_by_id("password").send_keys("admin")
         driver.find_element_by_xpath("//input[@value='Login']").click()
         sleep(5)
-        driver.find_element_by_id('li_id_user').click()
+        driver.find_element_by_css_selector('#li_id_user').click()
         sleep(10)
-        self.lasttr('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button')
+        self.lasttr('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button').click()
         sleep(5)
         
     
