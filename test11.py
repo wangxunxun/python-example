@@ -16,43 +16,24 @@ from time import sleep
 class Test11(unittest.TestCase):
     def setUp(self):
 #        self.driver = webdriver.Firefox()
-        self.driver = webdriver.Chrome('F:\chromedriver.exe')
+        self.driver = webdriver.Chrome('C:\chromedriver.exe')
         self.driver.implicitly_wait(30)
         self.base_url = "http://42.96.155.222:8888/"
         self.verificationErrors = []
         self.accept_next_alert = True
         
-    def lasttr(self,css):
+    def tablelasttr(self,css):
         a = str(css)
-        print a
         b = a.find('tr:')
-        print b 
-
-
         c = a.find('(',b,-1)
-        print c
-        d = a.find(')',b,-1)
-        print 'd=' ,d
-        
-        e = a[c+1:d]
-        print e
-        
-        f = string.atoi(e)
-        print f
-        
+        d = a.find(')',b,-1)        
+        e = a[c+1:d]      
+        f = string.atoi(e)        
         while f>1:
-
-            print f
             g = a[:c+1] +str(f) + a[d:]
             f -=1
-            print g
-           
-
             try:
-                print '#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(8) > td:nth-child(7) > button' == g
                 return self.driver.find_element_by_css_selector(g)
-
-                print g
                 break
             except:
                 continue
@@ -74,7 +55,7 @@ class Test11(unittest.TestCase):
         sleep(5)
         driver.find_element_by_css_selector('#li_id_user').click()
         sleep(10)
-        self.lasttr('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button').click()
+        self.tablelasttr('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button').click()
         sleep(5)
         
     
