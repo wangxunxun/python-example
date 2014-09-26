@@ -24,7 +24,7 @@ from ctypes.test.test_array_in_pointer import Test
 class basictestcase(unittest.TestCase):
     def setUp(self):
 #        self.driver = webdriver.Firefox()
-        self.driver = webdriver.Chrome(executable_path="C:\\chromedriver.exe", service_args=["--verbose", "--log-path=D:\\qc1.log"])
+        self.driver = webdriver.Chrome(executable_path="D:\\chromedriver.exe", service_args=["--verbose", "--log-path=D:\\qc1.log"])
         self.driver.implicitly_wait(30)
         self.base_url = "http://106.186.19.168:8888/"
         self.verificationErrors = []
