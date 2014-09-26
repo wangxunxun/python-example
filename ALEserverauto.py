@@ -104,7 +104,7 @@ class login(basictestcase):
         self.driver.find_element_by_name('password').clear()
         self.driver.find_element_by_name('password').send_keys('admin1')
         self.driver.find_element_by_css_selector('div.login_button > input[value="Login"]').click()
-        self.assertIn('Incorrect account or password.',self.driver.find_element_by_css_selector('body').text) 
+        self.assertIn('Incorrect username or password.',self.driver.find_element_by_css_selector('body').text) 
                
     def test_loginsuccess(self):
         u'''登陆成功'''
