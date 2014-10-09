@@ -6,18 +6,17 @@ Created on 2014-9-22
 '''
 
 from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
+
+
 from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import NoAlertPresentException
 import unittest, time, re
 from time import sleep
 import random
 import string
 import HTMLTestRunner
 import datetime
-from ctypes.test.test_array_in_pointer import Test
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 
@@ -25,7 +24,9 @@ class basictestcase(unittest.TestCase):
     def setUp(self):
 #        self.driver = webdriver.Firefox()
         self.driver = webdriver.Chrome(executable_path="D:\\chromedriver.exe", service_args=["--verbose", "--log-path=D:\\qc1.log"])
+#        self.driver = webdriver.Remote("http://localhost:8080/wd/hub", webdriver.DesiredCapabilities.ANDROID)
         self.driver.implicitly_wait(30)
+        self.wait = WebDriverWait(self.driver, 10)
         self.base_url = "http://106.186.19.168:8888/"
         self.verificationErrors = []
         self.accept_next_alert = True
@@ -124,7 +125,10 @@ class releasecontrol(basictestcase):
         
     def test_publishnewversion(self):
         u'''发布新版本'''
-        self.enterverison()      
+        self.enterverison()     
+        print self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody').text
+        self.wait.until(EC.title_is('Release Control'))
+        self.wait.until(EC.text_to_be_present_in_element('By.cssSelector("#tab1 > div:nth-child(1) > div > table > tbody")','Release')) 
         sleep(1)
         version = self.driver.find_element_by_css_selector('#release_version')
         platform = self.driver.find_element_by_css_selector('#release_platform')
@@ -143,8 +147,9 @@ class releasecontrol(basictestcase):
             
     def test_q_publishexistedversion(self):
         u'''发布已存在的版本'''
-        self.enterverison()      
-        sleep(1)
+        self.enterverison()     
+        self.wait.until('Release' in self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody').text) 
+
         self.driver.find_element_by_css_selector('#release_version').send_keys(self.versionnumber)
         self.driver.find_element_by_css_selector('#release_url').send_keys('http://42.96.155.222:8888/admin/release')
         self.driver.find_element_by_css_selector('#release_notes').send_keys(u'测试'*100)
@@ -155,7 +160,7 @@ class releasecontrol(basictestcase):
     def test_checkURL(self):  
         u'''发布版本页面验证URL功能'''
         self.enterverison()      
-        sleep(1)
+        self.wait.until('Release' in self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody').text) 
         self.driver.find_element_by_css_selector('#release_url').send_keys('http://42.96.155.222:8888/admin/release')
         self.driver.find_element_by_css_selector('#tab1 > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div.float_left.forminput_div > button').click()
         self.assertIn('Pass.', self.driver.find_element_by_css_selector('#tab1 > div:nth-child(2) > div > div:nth-child(2) > div:nth-child(3) > div > div.float_left.forminput_div > span.verify_1.hide').text)
@@ -169,7 +174,7 @@ class releasecontrol(basictestcase):
     def test_r_editversion(self):
         u'''编辑版本'''
         self.enterverison()
-        sleep(1)
+        self.wait.until('Release' in self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody').text) 
         try:
             a = self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(4)').text
             b = a+'123'
@@ -190,7 +195,7 @@ class releasecontrol(basictestcase):
         u'''删除版本'''
         
         self.enterverison()
-        sleep(1)
+        self.wait.until('Release' in self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody').text) 
         try:
             a = self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(1)').text
             self.driver.find_element_by_css_selector('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(2) > td:nth-child(8) > button').click()
@@ -314,4 +319,4 @@ if __name__ == "__main__":
                                title='ALE server',
                                description='Report_description'
                                )
-    runner.run(alltests)
+    runner.run(suite_releasecontrol)
