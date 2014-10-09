@@ -262,7 +262,7 @@ class setting(basictestcase):
         self.driver.find_element_by_css_selector('#email').clear()
         self.driver.find_element_by_css_selector('#email').send_keys('59853844@qq.com')
         self.driver.find_element_by_css_selector('body > div.wrapwidth.indexmargin > div > div > div > div:nth-child(2) > div.addsubmit.addlist > button.btn.btn-default.btn-info').click()
-        self.assertIn('AppLink™ Emulator', self.driver.find_element_by_css_selector('body').text)
+        self.assertIn(u'AppLink™ Emulator', self.driver.find_element_by_css_selector('body').text)
 
     def test_signout(self):
         u'''注销'''
@@ -270,7 +270,7 @@ class setting(basictestcase):
         self.driver.find_element_by_css_selector('#top > div > div.btn-group.float_right.menugroup > button').click()
         self.driver.find_element_by_css_selector('#top > div > div.btn-group.float_right.menugroup.open > ul > li:nth-child(2)').click()
         sleep(1)
-        self.assertIn('AppLink™ Emulator', self.driver.find_element_by_css_selector('body').text)
+        self.assertIn(u'AppLink™ Emulator', self.driver.find_element_by_css_selector('body').text)
         
 
                                                                             
