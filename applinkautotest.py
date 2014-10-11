@@ -24,11 +24,11 @@ class APPLINKAndroidTests(unittest.TestCase):
         desired_caps['platformVersion'] = '4.2。2'
         desired_caps['deviceName'] = 'Android Emulator'
         desired_caps['app'] = PATH(
-            'D:/Ford/APPLINK测试工具包/AppLinkTest2.0.apk'
+            u'D:/Ford/APPLINK测试工具包/AppLinkTest2.0.apk'
         )
         desired_caps['appPackage'] = 'com.ford.applink'
         desired_caps['appActivity'] = 'com.ford.applink.ui.activity.MainActivity'
-        self.driver = webdriver.Remote('http://localhost:4723/wd/hub',desired_caps)
+        self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
 
         
     def tearDown(self):
@@ -116,11 +116,6 @@ class setting(APPLINKAndroidTests):
         
         
 
-#        self.driver.execute_script("mobile: tap", {"touchCount":"1", "x":"134", "y":"87"})
-#        self.driver.scroll(text[9], text[0])
-#        self.driver.tap([(134,87)],500)
-#        self.driver.swipe(134,600,134,87,1000)
-#        print(self.driver.app_strings('ZH'))
 
 
         self.findelementbyclassnameindex('android.widget.Button', 1, 'OK').click()        
@@ -131,8 +126,8 @@ class setting(APPLINKAndroidTests):
 
 if __name__ == '__main__':
     suite = unittest.TestLoader().loadTestsFromTestCase(setting)
-    unittest.TextTestRunner(verbosity=2).run(suite)
-'''    
+#    unittest.TextTestRunner(verbosity=2).run(suite)
+    
     filename = 'D:/autotestreport/ALE_SERVER_test/testreport_' + datetime.datetime.now().strftime('%Y-%m-%d %H-%M') + '.html' 
     fp=file(filename,'wb')
     runner = HTMLTestRunner.HTMLTestRunner(
@@ -141,4 +136,3 @@ if __name__ == '__main__':
                                description='Report_description'
                                )
     runner.run(suite)
-'''
