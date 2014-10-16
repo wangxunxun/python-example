@@ -119,7 +119,11 @@ class BotaiAndroidTests(unittest.TestCase):
         b=a[index - 1]
         return b
     
-
+    def getsecondtext(self,ele):
+        self.element = ele
+        self.a = self.element.text
+        return self.a.split(',')[1]
+        
       
 
 class login(BotaiAndroidTests):    
@@ -135,9 +139,7 @@ class setting(BotaiAndroidTests):
 
     
     def feedback(self,value):
-        self.feedbackvalue = value
-        self.entersettingpage()                
-        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_feedback').clear()        
+        self.feedbackvalue = value           
         self.driver.find_element_by_id('com.pateo.mobile:id/edit_text').clear()
         self.driver.find_element_by_id('com.pateo.mobile:id/edit_text').send_keys(self.feedbackvalue)
         self.driver.find_element_by_id('com.pateo.mobile:id/choose_pic_button').click()            
@@ -153,8 +155,6 @@ class setting(BotaiAndroidTests):
         self.contact = contact
         self.telephone = telephone
         self.drivernumber = drivernumber
-        self.entersettingpage()
-        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_user_info').click()
         if self.nickname:
             self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_nickname').click()
             self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_nickname').send_keys(self.nickname)
@@ -175,17 +175,26 @@ class setting(BotaiAndroidTests):
     def test_feedback(self):
         u'''发送反馈测试用例'''
         self.value = '111111'
+        self.entersettingpage()     
+        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_feedback').click()      
         self.feedback(self.value)
         sleep(8)
         self.assertIn(self.value, self.findelementbyclassnameindex('android.widget.TextView', 3, 'feedbackvalue').text)
         
     def test_personalinformation(self):
         u'''更新个人信息测试用例'''
+        self.entersettingpage()   
+        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_user_info').click()
         self.nickname = '111'
         self.contact = '1'
         self.telephone = None
         self.drivernumber = None
+        self.nickmame1 = self.getsecondtext(self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_nickname')) + self.nickname
+        self.contact1 = self.getsecondtext(self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_emergency_contact')) + self.contact
+        self.telephone1 = self.getsecondtext(self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_emergency_contact_phone')) + self.telephone
+        self.drivernumber1 = self.getsecondtext(self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_driver_num')) + self.drivernumber        
         self.personalinformation(self.nickname, self.contact, self.telephone, self.drivernumber)
+        
         self.driver.find_element_by_id('com.pateo.mobile:id/tv_setting_user_effective').click()
         self.findelementbyclassnameindex('android.widget.ImageButton', 2, 'year').click()
         self.findelementbyclassnameindex('android.widget.ImageButton', 4, 'month').click()
@@ -206,7 +215,12 @@ class setting(BotaiAndroidTests):
         self.driver.find_element_by_id('com.pateo.mobile:id/activity_frame_title_btn_right').click()
         sleep(2)
         self.driver.find_element_by_id('com.pateo.mobile:id/activity_frame_title_btn_left').click()
-        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_user_info').click()        
+        self.driver.find_element_by_id('com.pateo.mobile:id/lin_setting_user_info').click()      
+        
+        self.assertIn(self.nickmame1, self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_nickname'))
+        self.assertIn(self.contact1, self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_emergency_contact'))
+        self.assertIn(self.telephone1, self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_emergency_contact_phone'))
+        self.assertIn(self.drivernumber1, self.driver.find_element_by_id('com.pateo.mobile:id/et_setting_user_driver_num'))         
         self.assertIn(u'长期', self.driver.find_element_by_id('com.pateo.mobile:id/tv_setting_user_effective_year').text)
         self.assertIn('2013-9-15', self.driver.find_element_by_id('com.pateo.mobile:id/tv_setting_user_effective').text)        
 
