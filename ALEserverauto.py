@@ -27,7 +27,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 class basictestcase(unittest.TestCase):
     def setUp(self):
 #        self.driver = webdriver.Firefox()
-        self.driver = webdriver.Chrome(executable_path="D:\\chromedriver.exe", service_args=["--verbose", "--log-path=D:\\qc1.log"])
+        self.driver = webdriver.Chrome(executable_path="/Users/wangxun/Documents/chromedriver", service_args=["--verbose", "--log-path=D:\\qc1.log"])        
+#        self.driver = webdriver.Chrome(executable_path="D:\\chromedriver.exe", service_args=["--verbose", "--log-path=D:\\qc1.log"])
 #        self.driver = webdriver.Remote("http://localhost:8080/wd/hub", webdriver.DesiredCapabilities.ANDROID)
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, 10)
@@ -348,8 +349,10 @@ if __name__ == "__main__":
     suite_feedback = unittest.TestLoader().loadTestsFromTestCase(feedback)
     alltests = unittest.TestSuite([suite_login,suite_setting,suite_releasecontrol,suite_management,suite_feedback])
 
-#    unittest.TextTestRunner(verbosity=2).run(alltests)
-    filename = 'D:/autotestreport/ALE_SERVER_test/testreport_' + datetime.datetime.now().strftime('%Y-%m-%d %H-%M') + '.html' 
+    unittest.TextTestRunner(verbosity=2).run(alltests)
+'''
+    filename = '/Users/wangxun/Documents/ALE_SERVER_test/testreport_' + datetime.datetime.now().strftime('%Y-%m-%d %H-%M') + '.html' 
+#    filename = 'D:/autotestreport/ALE_SERVER_test/testreport_' + datetime.datetime.now().strftime('%Y-%m-%d %H-%M') + '.html' 
     fp=file(filename,'wb')
     runner = HTMLTestRunner.HTMLTestRunner(
                                stream=fp,
@@ -357,3 +360,4 @@ if __name__ == "__main__":
                                description='Report_description'
                                )
     runner.run(alltests)
+'''
