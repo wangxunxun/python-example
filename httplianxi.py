@@ -12,6 +12,7 @@ import json
 import xlrd
 import xlwt
 from xlutils.copy import copy
+from __builtin__ import int
 '''
 
 def Time():
@@ -52,7 +53,7 @@ def Time():
 print "test begin: "+Time()
 #开始时间
 
-oldwb=xlrd.open_workbook(r'/Users/wangxun/Documents/url.xlsx')
+oldwb=xlrd.open_workbook(r'C:/Users/wangxun/Documents/url.xlsx')
 oldsh = oldwb.sheet_by_index(0)
 nrows=oldsh.nrows
 newwb=copy(oldwb)
@@ -60,10 +61,12 @@ newsh=newwb.get_sheet(0)
 #第一次调用xlrd，xlwt
 
 def GetHttpStatus(url):
-    try:
+    try:        
         conn= httplib2.Http(disable_ssl_certificate_validation=True)
         req=conn.request(url)
+        
         return req[0]['status']
+
     except Exception as err:
         return(err)
 #https请求方法
@@ -87,25 +90,28 @@ for i in range(1,nrows):
         newsh.write(i,7,'Normal')
     else:
         newsh.write(i,7,'Timeout')
-newwb.save('/Users/wangxun/Documents/newurl.xls')
+newwb.save('C:/Users/wangxun/Documents/newurl.xls')
 #将复制过的数据保存在newurl.xls
 
-newwb=xlrd.open_workbook(r'/Users/wangxun/Documents/newurl.xls')
+newwb=xlrd.open_workbook(r'C:/Users/wangxun/Documents/newurl.xls')
 newsh=newwb.sheet_by_index(0)
 nroNws=newsh.nrows
-print nroNws
 oldwb1=copy(newwb)
 oldsh1=oldwb1.get_sheet(0)
 #第二次调用xlrd，xlwt，复制newurl.xls到url.xls进行实际结果与预期结果对比
 
 for n in range(1,nroNws):
-    EX_reusult=newsh.cell(n,2).value
-    AC_reusult=newsh.cell(n,3).value
+    AC_reusult=newsh.cell(n,2).value + '.0'
+    EX_reusult=newsh.cell(n,3).value
+    EX_reusult=str(EX_reusult)
     if EX_reusult == AC_reusult:
         oldsh1.write(n,4,"PASS")
     else:
         oldsh1.write(n,4,"FAIL")
-oldwb1.save('/Users/wangxun/Documents/url.xls')
+oldwb1.save('C:/Users/wangxun/Documents/url.xls')
+
+if 200==200:
+    print 'aaaa'
 
 print "test over: "+Time()
 #结束时间

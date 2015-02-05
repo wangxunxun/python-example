@@ -4,82 +4,104 @@ Created on 2014年9月23日
 
 @author: wangxun
 '''
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.support.ui import Select
-from selenium.common.exceptions import NoSuchElementException
-import unittest, time, re
-import string
+import threading 
+import time
 from time import sleep
+import httplib2
+from urllib import urlencode 
+import requests
+import time
+import json
+import xlrd
+import xlwt
+from xlutils.copy import copy
+from __builtin__ import int
 
-class Test11(unittest.TestCase):
-    def setUp(self):
-#        self.driver = webdriver.Firefox()
-        self.driver = webdriver.Chrome('C:\chromedriver.exe')
-        self.driver.implicitly_wait(30)
-        self.base_url = "http://42.96.155.222:8888/"
-        self.verificationErrors = []
-        self.accept_next_alert = True
-        
-    def tablelasttr(self,css):
-        a = str(css)
-        b = a.find('tr:')
-        c = a.find('(',b,-1)
-        d = a.find(')',b,-1)        
-        e = a[c+1:d]      
-        f = string.atoi(e)        
-        while f>1:
-            g = a[:c+1] +str(f) + a[d:]
-            f -=1
-            try:
-                return self.driver.find_element_by_css_selector(g)
-                break
-            except:
-                continue
 
-             
 
-        
-        
-        
-    
-    def test_11(self):
-        driver = self.driver
-        driver.get(self.base_url + "login?next=%2F")
-        driver.find_element_by_id("username").clear()
-        driver.find_element_by_id("username").send_keys("admin")
-        driver.find_element_by_id("password").clear()
-        driver.find_element_by_id("password").send_keys("admin")
-        driver.find_element_by_xpath("//input[@value='Login']").click()
-        sleep(5)
-        driver.find_element_by_css_selector('#li_id_user').click()
-        sleep(10)
-        self.tablelasttr('#tab1 > div:nth-child(1) > div > table > tbody > tr:nth-child(11) > td:nth-child(7) > button').click()
-        sleep(5)
-        
-    
-    def is_element_present(self, how, what):
-        try: self.driver.find_element(by=how, value=what)
-        except NoSuchElementException, e: return False
-        return True
-    
+def Time():
+    tim=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    return tim
 
-    
-    def close_alert_and_get_its_text(self):
-        try:
-            alert = self.driver.switch_to_alert()
-            alert_text = alert.text
-            if self.accept_next_alert:
-                alert.accept()
-            else:
-                alert.dismiss()
-            return alert_text
-        finally: self.accept_next_alert = True
-    
-    def tearDown(self):
-        self.driver.quit()
-        self.assertEqual([], self.verificationErrors)
+print "test begin: "+Time()
 
-if __name__ == "__main__":
-    unittest.main()
+class timer(threading.Thread):
+    def __init__(self,interval):
+        threading.Thread.__init__(self)
+        self.interval = interval
+        self.thread_stop=False
+    
+    def run(self):
+        i =1
+        while i <= self.interval:
+            sleep(1)
+            print i
+            i=i+1
+        print 'stop'
+
+    def stop(self):  
+        self.thread_stop = True       
+
+class request(threading.Thread):
+    
+    def __init__(self,url):
+        threading.Thread.__init__(self)
+        self.url = url
+        self.thread_stop=False    
+    
+    
+    
+    def run(self):
+        try:        
+            conn= httplib2.Http(disable_ssl_certificate_validation=True)
+            Start=time.time()
+            req=conn.request(self.url)
+            End=time.time()
+            diff= End-Start
+
+            return req[0]['status']
+    
+        except Exception as err:
+            return(err)
+    def stop(self):  
+        self.thread_stop = True 
+ 
+def test():  
+
+    thread2 = request('http://google.com/')  
+    print 1
+#    thread1 = timer(10)  
+    thread2.start()  
+#    thread1.start()  
+    t = threading.Timer(5.0, jug)
+    t.start() 
+  
+
+def sayhello():
+        print "hello world"
+        global t        #Notice: use global variable!
+        t = threading.Timer(5.0, sayhello)
+        t.start()
+
+def request1(url):
+    try:        
+        conn= httplib2.Http(disable_ssl_certificate_validation=True)
+        Start=time.time()
+        req=conn.request(url)
+        End=time.time()
+        diff= End-Start
+
+        return req[0]['status']
+
+    except Exception as err:
+        return(err)
+
+def jug():
+    if request1('http://google.com/'):
+        return request1('http://google.com/')[0]['status']
+
+
+   
+if __name__ == '__main__':  
+    test()
+    print 11
