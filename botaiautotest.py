@@ -28,8 +28,10 @@ class BotaiAndroidTests(unittest.TestCase):
 
         desired_caps['deviceName'] = 'ZTEU930HD'        
         desired_caps['app'] = PATH(
-            u'D:/share/软件安装包/iVokaMINIX_1.6.0.apk'
+            u'/Users/wangxun/Documents/test app/iVokaMINIX_1.6.0.apk'
         )
+                
+        
         desired_caps['appPackage'] = 'com.pateo.mobile'
         desired_caps['appActivity'] = 'com.pateo.mobile.ui.account.LoginActivity'
         self.driver = webdriver.Remote('http://localhost:4723/wd/hub', desired_caps)
