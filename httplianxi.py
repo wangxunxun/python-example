@@ -5,13 +5,149 @@ Created on 2015年2月4日
 @author: wangxun
 '''
 import httplib2
-from twisted.spread.pb import respond
 from urllib import urlencode 
+import requests
+import time
+import json
+import xlrd
+import xlwt
+from xlutils.copy import copy
+'''
+
+def Time():
+    tim=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    return tim
+
+print Time()
 
 h=httplib2.Http()
 
-data1='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'
-data2=dict(data=data1)
-resp, content = h.request('http://policies.telematicsqa.ford.com/api/policies' ,"POST", urlencode(data2))
-print 'response=', resp
-print "content=" ,content
+feedbackinfo = {
+                    "name": "wangxun",
+                    "email": "59853844@qq.com",
+                    "telephone": '11111111111',
+                    "im": '454545',
+                    "feedback": '454545',
+                    "filename": '454545',
+                    "version":   '45345',
+                    "environment": 'darwin'
+                }
+
+
+#response = requests.post('http://ale.link-pub.cn/feedbacks', feedbackinfo)
+#print response
+
+
+
+
+#resp, content = h.request('http://ale.link-pub.cn/feedbacks' ,"POST", urlencode(feedbackinfo))
+#print 'response=', resp
+#print "content=" ,content
+'''
+
+def Time():
+    tim=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    return tim
+
+print "test begin: "+Time()
+#开始时间
+
+oldwb=xlrd.open_workbook(r'/Users/wangxun/Documents/url.xlsx')
+oldsh = oldwb.sheet_by_index(0)
+nrows=oldsh.nrows
+newwb=copy(oldwb)
+newsh=newwb.get_sheet(0)
+#第一次调用xlrd，xlwt
+
+def GetHttpStatus(url):
+    try:
+        conn= httplib2.Http(disable_ssl_certificate_validation=True)
+        req=conn.request(url)
+        return req[0]['status']
+    except Exception as err:
+        return(err)
+#https请求方法
+
+def GetHttpTime(url):
+    conn= httplib2.Http(disable_ssl_certificate_validation=True)
+    Start=time.time()
+    req=conn.request(url)
+    End=time.time()
+    diff= End-Start
+    return diff
+#获取请求时间
+
+for i in range(1,nrows):
+    url1=oldsh.cell_value(i,1)    
+    url=url1
+    newsh.write(i,2,GetHttpStatus(url))
+    newsh.write(i,5,Time())
+    newsh.write(i,6,GetHttpTime(url))
+    if GetHttpTime(url) < 1.0:
+        newsh.write(i,7,'Normal')
+    else:
+        newsh.write(i,7,'Timeout')
+newwb.save('/Users/wangxun/Documents/newurl.xls')
+#将复制过的数据保存在newurl.xls
+
+newwb=xlrd.open_workbook(r'/Users/wangxun/Documents/newurl.xls')
+newsh=newwb.sheet_by_index(0)
+nroNws=newsh.nrows
+print nroNws
+oldwb1=copy(newwb)
+oldsh1=oldwb1.get_sheet(0)
+#第二次调用xlrd，xlwt，复制newurl.xls到url.xls进行实际结果与预期结果对比
+
+for n in range(1,nroNws):
+    EX_reusult=newsh.cell(n,2).value
+    AC_reusult=newsh.cell(n,3).value
+    if EX_reusult == AC_reusult:
+        oldsh1.write(n,4,"PASS")
+    else:
+        oldsh1.write(n,4,"FAIL")
+oldwb1.save('/Users/wangxun/Documents/url.xls')
+
+print "test over: "+Time()
+#结束时间
+
+
+'''
+
+#-*- coding: utf-8 -*-
+import httplib2,time
+
+relist=[]
+fname=raw_input('请输入url： ')
+f1=open(fname,'r')
+relist=f1.readlines()
+print relist
+f1.close
+print len(relist)
+count=len(relist)
+
+def Time():
+    tim=time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))
+    return tim
+
+def GetHttpStatus(url):
+    try:
+        conn= httplib2.Http(disable_ssl_certificate_validation=True)
+        req=conn.request(url)
+        return req[0]['status']    
+    except Exception as err:
+        return(err)
+
+for m in range(0,count):
+    url1=relist[m]
+    url=url1.strip()
+    print url
+    if GetHttpStatus(url) !="200":
+        f2=open("urlhttps-result.txt","a")
+        f2.write("测试日期："+Time()+"\n")
+        f2.write( "请求失败，错误代码为："+GetHttpStatus(url))
+        f2.write("\n")
+        f2.close()
+        print "请求失败"
+    else:
+        print GetHttpStatus(url), "请求成功------------------------"
+'''
