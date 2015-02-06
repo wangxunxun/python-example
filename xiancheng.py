@@ -24,7 +24,7 @@ if __name__ == '__main__':
     for t in threads:
         t.setDaemon(True)
         t.start()
-    t.join()
+    sleep(10)
     print '333'
     print t1.is_alive()
     
