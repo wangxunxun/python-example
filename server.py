@@ -10,7 +10,9 @@ from socket import *
 from thread import *
 
 from SocketServer import TCPServer, BaseRequestHandler  
-
+import SocketServer
+import threading
+'''
 #''代表服务器为localhost
 myHost = '10.27.0.189'
 #在一个非保留端口号上进行监听
@@ -23,6 +25,7 @@ sockobj.bind((myHost, myPort))
 #监听，允许5个连结
 sockobj.listen(5)
 
+'''
 '''
 #直到进程结束时才结束循环
 while True:
@@ -41,7 +44,7 @@ while True:
     #当socket关闭时eof
     connection.close( )
 '''        
-        
+'''        
 def clientthread(conn,conns):
     
     while True:
@@ -64,3 +67,53 @@ while True:
     print conns
 
     start_new_thread(clientthread, (conn,conns,))
+
+
+'''
+class connectclient(threading.Thread):
+    def __init__(self,conn):
+        self.conn = conn
+    
+    def collectconn(self):
+        conns = []
+        while True:
+
+            conns.append(self.conn)
+            print conns
+            return conns
+        
+        
+    def run(self):
+
+        while True:   
+            data = self.conn.recv(1024)
+            if not data:
+                break       
+            for i in self.collectconn():
+                if i != self.conn:
+                    i.send(data)
+                
+        
+        
+           
+    
+    
+class TestServer():      
+    def __init__(self, ip='10.27.0.189', iPort=50007):      
+          
+        self.ip = ip  
+        self.iPort = iPort  
+    def start(self):     
+        sockobj = socket(AF_INET, SOCK_STREAM)       
+        #绑定它至端口号
+        sockobj.bind((self.ip, self.iPort))
+        #监听，允许5个连结
+        sockobj.listen(5)
+        while True:
+            conn,addr = sockobj.accept()
+            t= connectclient(conn)
+            start_new_thread(t.run, ())
+
+if __name__ == "__main__":  
+    ts = TestServer()  
+    ts.start()  
