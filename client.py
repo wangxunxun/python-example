@@ -62,7 +62,7 @@ class client:
             data = self.getdata(data)
             if not data:
                 break
-            if self.qunid=='':
+            if self.qunid=='0':
                 if data['id']==self.id:
                     print 'send:'+str(data)                
                 if data['toid'] == self.id:

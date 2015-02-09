@@ -62,7 +62,7 @@ class client:
             data = self.getdata(data)
             if not data:
                 break
-            if self.qunid=='':
+            if self.qunid=='0':
                 if data['id']==self.id:
                     print 'send:'+str(data)                
                 if data['toid'] == self.id:
@@ -76,10 +76,19 @@ class client:
                 
 
     def send(self,sockobj):
+
         self.qunid = raw_input('qunid:')
-        self.id = raw_input('id:')        
+        if not self.qunid:
+            self.qunid ='0'
+        self.id = raw_input('id:')      
+        if not self.id:
+            self.id = '0'  
         self.toid = raw_input('toid:') 
+        if not self.toid:
+            self.toid ='1'
         self.nickname = raw_input("input your name: ")
+        if not self.nickname:
+            self.nickname = 'troywang'
 
 
         while True:
