@@ -1,6 +1,4 @@
 #coding=utf-8
-
-
 import os
 import unittest
 from selenium.webdriver.common.by import By
@@ -24,7 +22,6 @@ class appledailyAndroidTests(unittest.TestCase):
         desired_caps['device'] = 'Android'
         desired_caps['platformName'] = 'Android'
         desired_caps['platformVersion'] = '4.2。2'
-#        desired_caps['deviceName'] = 'Android Emulator'
         desired_caps['deviceName'] = 'S5'        
         desired_caps['app'] = PATH(
             u'D:/测试APP/com.nextmedia.apk'
@@ -35,15 +32,7 @@ class appledailyAndroidTests(unittest.TestCase):
         self.wait = WebDriverWait(self.driver, 60)        
                 
     def tearDown(self):
-        self.driver.quit()
-    
-    def gettextview(self):        
-        textview=self.driver.find_elements_by_class_name('android.widget.TextView')
-        print('All TextView on the page is ',len(textview))
-        i=0
-        while i<len(textview):
-            print(textview[i].text)           
-            i=i+1 
+        self.driver.quit()    
 
     def gettextviewtext(self):
         textview=self.driver.find_elements_by_class_name('android.widget.TextView')
@@ -63,6 +52,7 @@ class appledailyAndroidTests(unittest.TestCase):
 class paihangbang(appledailyAndroidTests):
     def test_zuiguanzhu(self):
         self.entermainpage()
+        sleep(1)
         self.assertEqual('1', self.driver.find_element_by_id('com.nextmedia:id/ranking').text)
 
     def test_zuihit(self):
@@ -81,7 +71,7 @@ class paihangbang(appledailyAndroidTests):
     def test_checkitems(self):
         self.entermainpage()
         i =0
-        while i<7:
+        while i<8:
             self.driver.swipe(100, 1580, 100, 560, 2000)
             i=i+1
         self.assertIn('20', self.gettextviewtext())    
@@ -89,11 +79,14 @@ class paihangbang(appledailyAndroidTests):
 class pingguofb(appledailyAndroidTests):
     def test_enterpingguofb(self):
         self.entermainpage()
+        sleep(1)
+        self.wait.until(EC.element_to_be_clickable((By.ID,'com.nextmedia:id/header_menu')))
+        sleep(1)
         self.driver.find_element_by_id('com.nextmedia:id/header_menu').click()
-        self.wait.until(EC.presence_of_element_located((By.NAME,u'蘋果FB')))
+        self.wait.until(EC.text_to_be_present_in_element((By.NAME,u'蘋果FB'),u'蘋果FB'))
         self.driver.find_element_by_name(u'蘋果FB').click()
-        self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME,'android.webkit.WebView')))
-        self.assertTrue(self.driver.find_element_by_class_name('android.webkit.WebView'))
+        sleep(30) 
+        self.assertTrue(self.driver.find_element_by_class_name('android.view.View'))
         
            
         
