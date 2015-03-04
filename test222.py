@@ -51,8 +51,10 @@ def savesql():
 #        cur.execute("INSERT INTO users (username,password,nickname,mail) VALUES('%s','%s','%s','%s')" %(username1,password1,nickname1,mail1))
 #        print(cur.fetchall())        
 #        cur.execute("INSERT INTO message (send,receive,message) VALUES('%s','%s','%s')" %(send1,receive1,message1))
-        cur.execute("select * from message where dt between '2015-03-03 11:14:05' and '2015-03-03 11:19:00'")
-        print(cur.fetchall())   
+#        cur.execute("select * from message where dt between '2015-03-03 11:14:05' and '2015-03-03 11:19:00'")
+        cur.execute("select * from users where username='wangxun' and password='123456'")  
+        print(cur.fetchall())
+#        geshizhuanhuan(cur.fetchall())
         cur.close()
         conn.commit()
         conn.close() 
@@ -61,6 +63,15 @@ def savesql():
 #        cur.execute("drop table if exists message")
 
         conn.rollback()
+def geshizhuanhuan(data):
+    i=0
 
+    while i<len(data):
+        print(data[i])
+        print(data[i][4])
+        i=i+1
+        
+    
+    
 savesql()
 

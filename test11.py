@@ -11,7 +11,7 @@ def login():
         <form action="/login" method="post">
             Username: <input name="username" type="text" />
             Password: <input name="password" type="password" />
-            <input value="Login" type="submit" />
+            <input value="Login" type="submit" /><input value="Register" type="butotn" />
         </form>
     '''
 @post('/login') # or @route(’/login’, method=’POST’)
