@@ -1,65 +1,177 @@
 #coding=utf-8
 from bottle import get, post, request ,run,route,static_file,error,response,template,os# or route
 import MySQLdb
-
-
-
+from _mysql import result
 
 @get('/login') # or @route('/login')
 def login():
-    return '''
-        <form action="/login" method="post">
+    return ''' <form action="/login" method="post">
             Username: <input name="username" type="text" />
             Password: <input name="password" type="password" />
-            <input value="Login" type="submit" /><input value="Register" type="button" />
-        </form>
-    '''
+            <br/><input value="Login" type="submit" /><input value="Register" type="button" onclick="javascrtpt:window.location.href='/register'"/>
+           <div id="login_error" ></div>
+        </form>'''
+
 @post('/login') # or @route(’/login’, method=’POST’)
 def do_login():
     username = request.forms.get('username')
-    password = request.forms.get('password')
-    if username and password:
+    password = request.forms.get('password')    
+    if not username:
+        return errormessage_login('please input username')
+    elif not password:
+        return errormessage_login('please input password')
+    elif username and password:
         response.set_cookie("account", username, secret='some-secret-key')
+
         if verifyuser(username,password):
-            return template("<p>Welcome {{name}}! You are now logged in.</p>", name=username)
+            result=searchalluser()
+            print result
+            return template('''<p>Welcome {{name}}! You are now logged in.<div id='getuser'><input type='button' value='getuser' onclick="myFunction()"/></p>
+                <div id = 'demo'></div>
+                <script>
+                    function myFunction()
+                    {
+                    var x="",i=0,j='{{result}}';
+                    
+                    while (i<5)
+                    
+                      {
+                      x=x + "The username,nickname,mail is " + j + "<br>";
+                      i++;
+                      }
+                    document.getElementById("demo").innerHTML=x;
+                    }
+                </script> 
+            
+            
+            
+            
+            
+            
+            
+            ''', name=username,result=result)
         else:
-            return "<p>Login failed.</p>"
+            return errormessage_login('invaild username or password')
+      
+
+
+        
+
+@get('/register')
+def register():
+    return '''<form method="post"  action="/register">
+        <div class="input_list">username:<input type="text" name="username" />
+        <div class="input_list">password:<input type="password" name="password" />
+        <div class="input_list">comfirmpassword:<input type="password" name="confirmpassword" />
+        <div class="input_list">nickname:<input type="text" name="nickname" />
+        <div class="input_list">mail:<input type="text" name="mail" />
+        <div class="submit"><input type="submit" value="submit" /><input type="button" value="back" onclick="javascrtpt:window.location.href='/login'"/>
+        <div id="register_error1" ></div>
+        </form>'''
+    
+@post('/register')
+def do_register():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    comfirmpassword = request.forms.get('confirmpassword')
+    nickname = request.forms.get('nickname')
+    mail = request.forms.get('mail')
+    if not username:
+        print errormessage_register('please input username')
+        return errormessage_register('please input username')
+    elif not password:
+        return errormessage_register('please input password')
+    elif not comfirmpassword:
+        return errormessage_register('please input comfirmpassword')
+    elif password!=comfirmpassword:
+        return errormessage_register('the password is not the same')
+    elif saveuser(username, password,comfirmpassword, nickname, mail)==0:        
+        return errormessage_register('the username has been registered')
+    else:
+        return errormessage_register('success')
+
+def mysqlconnect():
+    return MySQLdb.connect(host='69.164.202.55',user='test',passwd='test',db='test',port=3306)
+    
+
+
+def errormessage_login(message):
+    return template( ''' <form action="/login" method="post">
+            Username: <input name="username" type="text" />
+            Password: <input name="password" type="password" />
+            <br/><input value="Login" type="submit" /><input value="Register" type="button" onclick="javascrtpt:window.location.href='/register'"/>
+           <div id="login_error" >{{errormessage}}</div>
+            </form>''',errormessage=message)     
+    
+def errormessage_register(message):
+    return template('''<form method="post"  action="/register">
+    <div class="input_list">username:<input type="text" name="username" />
+    <div class="input_list">password:<input type="password" name="password" />
+    <div class="input_list">comfirmpassword:<input type="password" name="confirmpassword" />
+    <div class="input_list">nickname:<input type="text" name="nickname" />
+    <div class="input_list">mail:<input type="text" name="mail" />
+    <div class="submit"><input type="submit" value="submit" /><input type="button" value="back" onclick="javascrtpt:window.location.href='/login'"/>
+    <div id="register_error1" >{{errormessage1}}</div>
+    </form>''',errormessage1=message)
+            
+            
     
 def verifyuser(username,password):
-    conn=MySQLdb.connect(host='69.164.202.55',user='test',passwd='test',db='test',port=3306)
+    conn=mysqlconnect()
     cur=conn.cursor()
     cur.execute("select * from users where username='%s' and password='%s'"%(username,password))  
     result = cur.fetchall()
-    print(result)
     return result
 
-def savesql():
-    username = 'wangxun'
-    password = "123456"
-    createteble = """CREATE TABLE users (
-     username  CHAR(20),
-     password CHAR(20)
-     )"""     
-     
-    conn=MySQLdb.connect(host='69.1624.202.55',user='test',passwd='test',db='test',port=3306)
+def searchalluser():
+    conn=mysqlconnect()
+    cur=conn.cursor()
+    cur.execute("select * from users")
+    result = cur.fetchall()
+    print result
+    print len(result)
+    return result
+    
+
+
+
+def saveuser(username,password,comfirmpassword,nickname,mail): 
+    createtableusers = """CREATE TABLE users (
+     username  CHAR(20) not null,
+     password CHAR(20) not null,
+     nickname char(20),
+     mail char(60),
+     dt timestamp not null default now(),
+     primary key(username)
+     )"""        
+
+    conn=mysqlconnect()
     cur=conn.cursor()
     if cur.execute('show tables like "users"') == 0:
-        cur.execute(createteble)
+        cur.execute(createtableusers)
 #            cur.execute('drop table if exists message')
     try:
 #            cur.execute(self.createteble)
+        cur.execute(("select * from users where username = '%s'") % username)
+        result = cur.fetchall()
+        if result:
+            return 0
+            print('username is dumplicate')
+        else:
 
-        cur.execute("INSERT INTO users(username, \
-   password) \
-   VALUES ('%s, '%s')" % \
-   (username,password))
-
-        cur.close()
-        conn.commit()
-        conn.close()
+            cur.execute("INSERT INTO users(username, \
+       password,nickname,mail) \
+       VALUES ('%s', '%s','%s','%s')" % \
+       (username,password,nickname,mail))
+            result = cur.fetchall()
+            print(result)
+            cur.close()
+            conn.commit()
+            conn.close()
+            return 1
     except:
         conn.rollback()
-    
+        
 
 
 run(host='localhost', port=8080)
