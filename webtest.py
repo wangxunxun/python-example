@@ -26,28 +26,50 @@ def do_login():
         if verifyuser(username,password):
             result=searchalluser()
             print result
-            return template('''<p>Welcome {{name}}! You are now logged in.<div id='getuser'><input type='button' value='getuser' onclick="myFunction()"/></p>
-                <div id = 'demo'></div>
-                <script>
-                    function myFunction()
-                    {
-                    var x="",i=0,j='{{result}}';
+            return template('''<body><p>Welcome {{name}}! You are now logged in.<div id='getuser'><input type='button' value='getuser' onclick="myFunction()"/></p>
+                <div id = 'demo'></div></body>
+                
+            <table id= "hehe" border="1" style="display:none">
+            <tr>
+            <th>username</th>
+            <th>nickname</th>
+            <th>mail</th>
+            <th>datatime</th>
+            <th>caozuo</th>
+            </tr>
+            
+            %for ll in result:
+                
+              <tr>
+              %i=0
+                %while i<5:
+                    %if i !=1:
+                    <td>{{ ll[i] }}</td>
+                  %end
+                  %i =i+1
+                  %end
+                    <td><input type="button" name="chat" value="chat"></td>
+                    %end
                     
-                    while (i<5)
-                    
-                      {
-                      x=x + "The username,nickname,mail is " + j + "<br>";
-                      i++;
-                      }
-                    document.getElementById("demo").innerHTML=x;
-                    }
-                </script> 
+                %end
+              </tr>
             
-            
-            
-            
-            
-            
+            %end
+            %end
+            </table>   
+                            
+                            
+            <script>
+                function myFunction()
+                {                
+                if (document.getElementById("hehe").style.display=='none')
+                {document.getElementById("hehe").style.display="block";
+                }
+                else
+                {document.getElementById("hehe").style.display="none";
+                }                
+                }                                        
+                </script>              
             
             ''', name=username,result=result)
         else:
