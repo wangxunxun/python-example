@@ -57,16 +57,7 @@ class RequestHandler(SocketServer.StreamRequestHandler):
         del(self.server.users[self.nickname])
     self.request.close()
 
-  def processInput(self):
-    done = False
-    l = self._readline()
-    command, arg = self._parseCommand(l)
-    if command:
-      done = command(arg)
-    else:
-      l = '<%s> %s\n' % (self.nickname, l)
-      self.broadcast(l)
-    return done
+
 
   def nickCommand(self,nickname):
     if not nickname:
@@ -96,6 +87,7 @@ class RequestHandler(SocketServer.StreamRequestHandler):
 
   def broadcast(self, message, includeThisUser=True):
     message = self._ensureNewline(message)
+    print self.server.users.items()
     for user, output in self.server.users.items():
       if includeThisUser or user != self.nickname:
         output.write(message.encode('utf-8'))
@@ -110,6 +102,19 @@ class RequestHandler(SocketServer.StreamRequestHandler):
     if s and s[-1] !='\n':
       s += '\r\n'
     return s
+
+
+  def processInput(self):
+    done = False
+    l = self._readline()
+    command, arg = self._parseCommand(l)
+    if command:
+      done = command(arg)
+    else:
+      l = '<%s> %s\n' % (self.nickname, l)
+      print l
+      self.broadcast(l)
+    return done
 
   def _parseCommand(self, input):
     commandMethod, arg = None, None
@@ -128,10 +133,6 @@ class RequestHandler(SocketServer.StreamRequestHandler):
 
 
 if __name__ == '__main__':
-  import sys
-  if len(sys.argv) < 3:
-    print('Usage: %s [hostname] [port number]' %sys.argv[0])
-    sys.exit(1)
-  hostname = sys.argv[1]
-  port = int(sys.argv[2])
-  PythonChatServer((hostname,port),RequestHandler).serve_forever()
+    hostname = 'localhost'
+    port = 50007
+    PythonChatServer((hostname,port),RequestHandler).serve_forever()
