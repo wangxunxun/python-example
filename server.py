@@ -192,8 +192,8 @@ class test(threading.Thread):
     #                if i != self.conn:
                         i.send(self.data)
             except:
-                
-                self.conn.close()
+                print threading.current_thread()
+                return
                 
                 
                 
