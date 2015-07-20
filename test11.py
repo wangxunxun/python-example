@@ -1,69 +1,117 @@
+#coding=utf-8
+from bottle import get, post, request ,run,route,static_file,error,response,template,os# or route
 import MySQLdb
-import string
-sql = """CREATE TABLE EMPLOYEE1 (
-         FIRST_NAME  CHAR(20) NOT NULL,
-         LAST_NAME  CHAR(20),
-         AGE INT,  
-         SEX CHAR(1),
-         INCOME FLOAT )""" 
-sql1 = """INSERT INTO EMPLOYEE(FIRST_NAME,
-         LAST_NAME, AGE, SEX, INCOME)
-         VALUES ('Mac', 'Mohan', 20, 'M', 2000)"""
-sql2 = "INSERT INTO EMPLOYEE(FIRST_NAME, \
-       LAST_NAME, AGE, SEX, INCOME) \
-       VALUES ('%s', '%s', '%d', '%c', '%d' )" % \
-       ('Mac', 'Mohan', 20, 'M', 2000)
-       
-       
-sql3 = "INSERT INTO EMPLOYEE(FIRST_NAME,\
-         LAST_NAME, AGE, SEX, INCOME) VALUES ('%s', '%s', '%d', '%c', '%d')"  
-param = (('Mac', 'Mohan', 20, 'M', 20001), ('Mac', 'Mohan', 20, 'M', 20001), ('Mac', 'Mohan', 20, 'M', 20002))  
-
-sql4= "INSERT INTO MESSAGE(ID, \
-       TOID, QUNID, NICKNAME, MESSAGE) \
-       VALUES ('%d', '%d', '%d', '%s', '%s' )" %        (454, 666, 45, '454', '5656')   
 
 
-createteble = """CREATE TABLE MESSAGE (
-         ID  INT,
-         TOID INT, 
-         QUNID INT, 
-         NICKNAME  CHAR(20),
-         MESSAGE CHAR(40)
-         )"""   
+
+
+@get('/login') # or @route('/login')
+def login():
+    return '''
+        <form action="/login" method="post">
+            Username: <input name="username" type="text" />
+            Password: <input name="password" type="password" />
+            <input value="Login" type="submit" /><input value="Register" type="butotn" />
+        </form>
+    '''
+@post('/login') # or @route(’/login’, method=’POST’)
+def do_login():
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    if username and password:
+        response.set_cookie("account", username, secret='some-secret-key')
+        return template("<p>Welcome {{name}}! You are now logged in.</p>", name=username)
+    else:
+        return "<p>Login failed.</p>"
     
-try:
-    conn=MySQLdb.connect(host='localhost',user='root',passwd='123456',db='test',port=3306)
-    cur=conn.cursor()
+@route('/restricted')
+def restricted_area():
+    username = request.get_cookie("account", secret='some-secret-key')
+    if username:
+        return template("Hello {{name}}. Welcome back.", name=username)
+    else:
+        return "You are not logged in. Access denied."
+    
+@get('/upload') # or @route('/upload')
+def upload():   
+    return '''
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            Category: <input type="text" name="category" />
+            Select a file: <input type="file" name="upload" />
+            <input type="submit" value="Start upload" />
+        </form>
+    '''
+@route('/upload', method='POST')
+def do_upload():
+    category = request.forms.get('category')
+    upload = request.files.get('upload')
+    name, ext = os.path.splitext(upload.filename)
+    print name,ext
+    if ext not in ('.png','.jpg','.jpeg'):
+        return 'File extension not allowed.'
+    save_path = 'C:/Users/xun/Pictures'
     try:
-        if cur.execute('show tables like "message"') == 0:
-            cur.execute(createteble)
-            
-#        cur.execute('drop table if exists message')
-#        cur.execute(sql4)
-        cur.execute('select * from message where id =1 or toid=1')
-#        cur.executemany(sql3, param)
-        data = cur.fetchall()
-        for i in data:
-            if i[2]==0:                
-                if i[1]==1:
-                    print 'receive:'+str(i)
-                if i[0]==1:
-                    
-                    print "send:"+str(i)
-            else:
-                if i[1]==1:
-                    print 'qunreceive:'+str(i)
-                if i[0]==1:
-                    
-                    print "qunsend:"+str(i)
+        upload.save(save_path) # appends upload.filename automatically
+        return 'OK'    
+    except:
+        return 'File exists.'
+    
+    
+    
+    
+'''    
+@route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='C:/Users/xun/Pictures')
 
+@error(404)
+def error404(error):
+    return 'Nothing here, sorry'
+
+@route('/static/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root='C:/Users/xun/Pictures')
+'''
+@route('/download/<filename:path>')
+def download(filename):
+    return static_file(filename, root='C:/Users/xun/Pictures', download=filename)
+
+@route('/hello')
+def hello_again():
+    if request.get_cookie("visited"):
+        return "Welcome back! Nice to see you again"
+    else:
+        response.set_cookie("visited", "yes")
+        return "Hello there! Nice to meet you"
+
+
+def savesql():
+    username = 'wangxun'
+    password = "123456"
+    createteble = """CREATE TABLE users (
+     username  CHAR(20),
+     password CHAR(20)
+     )"""     
+     
+    conn=MySQLdb.connect(host='69.1624.202.55',user='test',passwd='test',db='test',port=3306)
+    cur=conn.cursor()
+    if cur.execute('show tables like "users"') == 0:
+        cur.execute(createteble)
+#            cur.execute('drop table if exists message')
+    try:
+#            cur.execute(self.createteble)
+
+        cur.execute("INSERT INTO users(username, \
+   password) \
+   VALUES ('%s, '%s')" % \
+   (username,password))
 
         cur.close()
         conn.commit()
         conn.close()
     except:
         conn.rollback()
+    
 
-except MySQLdb.Error,e:
-     print "Mysql Error %d: %s" % (e.args[0], e.args[1])
+
+run(host='localhost', port=8080)

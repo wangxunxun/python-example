@@ -27,7 +27,7 @@ class ChatClient:
         print("Currently in the chat room:", self.input.readline().decode('utf-8').strip())
 
         self.run()
- 
+
     def run(self):        
         propagateStandardInput = self.PropagateStandardInput(self.output)
         propagateStandardInput.start()
@@ -55,7 +55,7 @@ class ChatClient:
 if __name__ == '__main__':
     hostname = 'localhost'
     port = 50007
-    nickname = 'test1'
+    nickname = 'test'
 
 
 

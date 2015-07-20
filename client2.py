@@ -58,20 +58,23 @@ class client:
         
     def receive(self,sockobj):
         while True:
-            data = sockobj.recv(1024)
-            data = self.getdata(data)
-            if not data:
-                break
-            if self.qunid=='0':
-                if data['id']==self.id:
-                    print 'send:'+str(data)                
-                if data['toid'] == self.id:
-                    print 'receive:'+str(data)   
-            elif data['qunid'] == self.qunid:
-                if data['id']==self.id:
-                    print 'qunsend:'+str(data)    
-                else:
-                    print "qunreceive:"+str(data)
+            try:
+                data = sockobj.recv(1024)
+                data = self.getdata(data)
+                if not data:
+                    break
+                if self.qunid=='0':
+                    if data['id']==self.id:
+                        print 'send:'+str(data)                
+                    if data['toid'] == self.id:
+                        print 'receive:'+str(data)   
+                elif data['qunid'] == self.qunid:
+                    if data['id']==self.id:
+                        print 'qunsend:'+str(data)    
+                    else:
+                        print "qunreceive:"+str(data)
+            except:
+                pass
 
                 
 
