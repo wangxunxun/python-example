@@ -44,7 +44,7 @@ class exportxml:
         
         
         
-            testsuite_s[i].setAttribute("name", self.testdata[i].get("testsuite"))   
+            testsuite_s[i].setAttribute("name", self.testdata[i].get("testsuite").encode('utf-8'))   
             testcase_s=[]
             summary_s =[]
             preconditions_s =[]
@@ -72,7 +72,7 @@ class exportxml:
         
                 
 
-                testcase_s[j].setAttribute("name", self.testdata[i].get("testcases")[j])
+                testcase_s[j].setAttribute("name", self.testdata[i].get("testcases")[j].encode('utf-8'))
         
             
                 
@@ -80,10 +80,10 @@ class exportxml:
             
             
             
-                summary_text = dom.createTextNode(self.testdata[i].get("summary")[j])
-                precondition_text = dom.createTextNode(self.testdata[i].get("precondition")[j])
-                execution_type_text = dom.createTextNode(self.testdata[i].get("execution_type")[j])
-                importance_text = dom.createTextNode(self.testdata[i].get("importance")[j])
+                summary_text = dom.createTextNode(self.testdata[i].get("summary")[j].encode('utf-8'))
+                precondition_text = dom.createTextNode(self.testdata[i].get("precondition")[j].encode('utf-8'))
+                execution_type_text = dom.createTextNode(self.testdata[i].get("execution_type")[j].encode('utf-8'))
+                importance_text = dom.createTextNode(self.testdata[i].get("importance")[j].encode('utf-8'))
             
                 summary_s[j].appendChild(summary_text)
                 
@@ -118,11 +118,11 @@ class exportxml:
                     expectedresults_s.append(expectedresults)
                     step_execution_type_s.append(step_execution_type)
         
-                    step_number_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("stepid"))
-                    actions_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("action"))
+                    step_number_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("stepid").encode('utf-8'))
+                    actions_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("action").encode('utf-8'))
 
-                    expectedresults_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("result"))
-                    step_execution_type_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("execution_type"))
+                    expectedresults_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("result").encode('utf-8'))
+                    step_execution_type_text = dom.createTextNode(self.testdata[i].get("steps")[j][k].get("execution_type").encode('utf-8'))
                     
                     step_number_s[k].appendChild(step_number_text)
                     actions_s[k].appendChild(actions_text)
@@ -183,39 +183,39 @@ class readexcel:
             if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,6).value:
 
                 testsuite.setdefault("testsuite",unicode(self.table.cell(i,0).value))
-                self.testcases.append(str(self.table.cell(i,1).value))
-                self.summary.append(str(self.table.cell(i,2).value))
-                self.preconditon.append(str(self.table.cell(i,3).value))
-                self.casetype.append(str(self.table.cell(i,4).value))
-                self.importance.append(str(self.table.cell(i,5).value))
+                self.testcases.append(unicode(self.table.cell(i,1).value))
+                self.summary.append(unicode(self.table.cell(i,2).value))
+                self.preconditon.append(unicode(self.table.cell(i,3).value))
+                self.casetype.append(unicode(self.table.cell(i,4).value))
+                self.importance.append(unicode(self.table.cell(i,5).value))
                 step.setdefault("stepid",unicode(self.table.cell(i,6).value))
-                step.setdefault("action",str(self.table.cell(i,7).value))
-                step.setdefault("result",str(self.table.cell(i,8).value))
-                step.setdefault("execution_type",str(self.table.cell(i,9).value))
+                step.setdefault("action",unicode(self.table.cell(i,7).value))
+                step.setdefault("result",unicode(self.table.cell(i,8).value))
+                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
                 self.steps.append(step)
                 self.testsuites.append(testsuite)
                 
                 
             elif not self.table.cell(i,0).value and not self.table.cell(i,1).value and self.table.cell(i,6).value:
 
-                step.setdefault("stepid",str(self.table.cell(i,6).value))
-                step.setdefault("action",str(self.table.cell(i,7).value))
-                step.setdefault("result",str(self.table.cell(i,8).value))
-                step.setdefault("execution_type",str(self.table.cell(i,9).value))
+                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
+                step.setdefault("action",unicode(self.table.cell(i,7).value))
+                step.setdefault("result",unicode(self.table.cell(i,8).value))
+                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
                 self.steps.append(step)
                 
             elif not self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,6).value:
 
                 
-                self.testcases.append(str(self.table.cell(i,1).value))
-                self.summary.append(str(self.table.cell(i,2).value))
-                self.preconditon.append(str(self.table.cell(i,3).value))
-                self.casetype.append(str(self.table.cell(i,4).value))
-                self.importance.append(str(self.table.cell(i,5).value))
-                step.setdefault("stepid",str(self.table.cell(i,6).value))
-                step.setdefault("action",str(self.table.cell(i,7).value))
-                step.setdefault("result",str(self.table.cell(i,8).value))
-                step.setdefault("execution_type",str(self.table.cell(i,9).value))
+                self.testcases.append(unicode(self.table.cell(i,1).value))
+                self.summary.append(unicode(self.table.cell(i,2).value))
+                self.preconditon.append(unicode(self.table.cell(i,3).value))
+                self.casetype.append(unicode(self.table.cell(i,4).value))
+                self.importance.append(unicode(self.table.cell(i,5).value))
+                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
+                step.setdefault("action",unicode(self.table.cell(i,7).value))
+                step.setdefault("result",unicode(self.table.cell(i,8).value))
+                step.setdefault("execution_type",unicode(self.table.cell(i,9).value))
                 self.steps.append(step)
             i=i+1
         self.testdata.append(self.testsuites)
