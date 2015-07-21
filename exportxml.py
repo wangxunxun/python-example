@@ -1,4 +1,4 @@
-
+#coding=utf-8
 from xml.dom import minidom
 import xlrd
 '''dom = minidom.parse('C:/Users/wangxun/Downloads/testcases.xml')
@@ -160,10 +160,11 @@ class exportxml:
 
 class readexcel:
     def __init__(self,testexcel):
-        self.testexcel = testexcel        
-    def read(self):
+        self.testexcel = testexcel   
         self.data = xlrd.open_workbook(self.testexcel)
-        self.table = self.data.sheet_by_name("Sheet1")
+        self.table = self.data.sheet_by_name("Sheet1")    
+        
+    def read(self):
         self.testdata = []
         self.testsuites = []
         self.testcases =[]
@@ -173,6 +174,7 @@ class readexcel:
         self.importance =[]
         self.steps = []
         self.casestep = []
+        self.testdata = [] 
         i =1
         j =self.table.nrows
         while i<j:
@@ -180,13 +182,13 @@ class readexcel:
             testsuite = {}
             if self.table.cell(i,0).value and self.table.cell(i,1).value and self.table.cell(i,6).value:
 
-                testsuite.setdefault("testsuite",str(self.table.cell(i,0).value))
+                testsuite.setdefault("testsuite",unicode(self.table.cell(i,0).value))
                 self.testcases.append(str(self.table.cell(i,1).value))
                 self.summary.append(str(self.table.cell(i,2).value))
                 self.preconditon.append(str(self.table.cell(i,3).value))
                 self.casetype.append(str(self.table.cell(i,4).value))
                 self.importance.append(str(self.table.cell(i,5).value))
-                step.setdefault("stepid",str(self.table.cell(i,6).value))
+                step.setdefault("stepid",unicode(self.table.cell(i,6).value))
                 step.setdefault("action",str(self.table.cell(i,7).value))
                 step.setdefault("result",str(self.table.cell(i,8).value))
                 step.setdefault("execution_type",str(self.table.cell(i,9).value))
@@ -226,9 +228,15 @@ class readexcel:
 
         return self.testdata
             
-
-
-        
+    def suitedis(self):        
+        j=1
+        dis =[]        
+        while j<self.table.nrows:
+            if self.table.cell(j,0).value:
+                dis.append(j)
+            j=j+1
+        dis.append(self.table.nrows)
+        return dis
     def casedis(self):
         j=1
         dis =[]
@@ -237,31 +245,110 @@ class readexcel:
                 dis.append(j)
             j=j+1
         dis.append(self.table.nrows)
-        print dis
         return dis
     
-    def suitedis(self):
-        j=1
-        dis =[]
-        while j<self.table.nrows:
-            if self.table.cell(j,0).value:
-                dis.append(j)
-            j=j+1
-        dis.append(self.table.nrows)
-        print dis
-        return dis
-    
-        
-    def teststep(self):
-        a = [1, 4, 6, 9, 11]
-        b = [1, 6, 11]
+    def datastep(self):
+        data = self.read()
+        a = self.casedis()
         test =[]
         i =0
         while i<len(a)-1:
-            test.append(self.steps[a[i]-1:a[i+1]-1])
+            test.append(data[6][a[i]-1:a[i+1]-1])
             i=i+1
-        print test
         return test
+    
+    def casecount(self,i,j):
+        k=1
+        start =0
+        end =0
+        while k<i:
+            if self.table.cell(k,6).value ==1.0:
+                start = start +1
+            k=k+1
+        l=1
+        while l<j:
+            if self.table.cell(l,6).value ==1.0:
+                end = end +1
+            l=l+1
+        return end - start
+    
+    def datacase(self):
+        test =[]
+        a = self.suitedis()
+        i =0
+        while i<len(a)-1:
+            bb=self.casecount(a[i], a[i+1])
+            test.append(bb)                        
+            i=i+1
+        return test
+    
+    def case(self):
+        data = self.read()
+        a =self.datacase()
+        i=0
+        allcases=[]        
+        while i<len(a):
+            if i==0:
+                cases = []
+                case = data[1][i:a[i]]
+                summary = data[2][i:a[i]]
+                precondition = data[3][i:a[i]]
+                execution_type = data[4][i:a[i]]
+                importance = data[5][i:a[i]]
+                steps = self.datastep()[i:a[i]]
+                cases.append(case)
+                cases.append(summary)
+                cases.append(precondition)
+                cases.append(execution_type)
+                cases.append(importance)
+                cases.append(steps)                
+                allcases.append(cases)
+                
+            else:
+                cases = []
+                case = data[1][a[i-1]:a[i-1]+a[i]]
+                summary = data[2][a[i-1]:a[i-1]+a[i]]
+                precondition = data[3][a[i-1]:a[i-1]+a[i]]
+                execution_type = data[4][a[i-1]:a[i-1]+a[i]]
+                importance = data[5][a[i-1]:a[i-1]+a[i]]
+                steps = self.datastep()[a[i-1]:a[i-1]+a[i]]                                
+                cases.append(case)
+                cases.append(summary)
+                cases.append(precondition)
+                cases.append(execution_type)
+                cases.append(importance)
+                cases.append(steps)                
+                allcases.append(cases)                            
+            i=i+1
+        return allcases
+    
+    def testsuite(self):
+        i = 0
+        data = self.read()
+        suite =[]
+        test = self.case()
+
+        while i<len(data[0]):
+            aa = {}
+            aa.setdefault("testsuite",data[0][i].get("testsuite"))
+            aa.setdefault("testcases",test[i][0])
+            aa.setdefault("summary",test[i][1])
+            aa.setdefault("precondition",test[i][2])
+            aa.setdefault("execution_type",test[i][3])
+            aa.setdefault("importance",test[i][4])
+            aa.setdefault("steps",test[i][5])
+            suite.append(aa)
+            i=i+1
+        return suite
+
+
+        
+
+    
+
+    
+        
+
         
             
 
@@ -286,11 +373,19 @@ if __name__ == "__main__":
     
     cc=[{'testsuite': 'suite1', 'precondition': ['preconditon1', 'preconditon2', 'preconditon3'], 'importance': ['1.0', '2.0', '2.0'], 'execution_type': ['1.0', '2.0', '2.0'], 'testcases': ['case1', 'case2', 'case3'], 'steps': [[{'action': 'action1', 'stepid': '1.0', 'result': 'result1', 'execution_type': '1.0'}, {'action': 'action2', 'stepid': '2.0', 'result': 'result2', 'execution_type': '2.0'}, {'action': 'action3', 'stepid': '3.0', 'result': 'result3', 'execution_type': '3.0'}], [{'action': 'action1', 'stepid': '1.0', 'result': 'result1', 'execution_type': '1.0'}, {'action': 'action2', 'stepid': '2.0', 'result': 'result2', 'execution_type': '2.0'}], [{'action': 'action1', 'stepid': '1.0', 'result': 'result1', 'execution_type': '1.0'}, {'action': 'action2', 'stepid': '2.0', 'result': 'result2', 'execution_type': '2.0'}]], 'summary': ['summary1', 'summary2', 'summary3']}, {'testsuite': 'suite2', 'precondition': ['preconditon1', 'preconditon2'], 'importance': ['1.0', '1.0'], 'execution_type': ['1.0', '1.0'], 'testcases': ['case1', 'case2'], 'steps': [[{'action': 'action1', 'stepid': '1.0', 'result': 'result1', 'execution_type': '1.0'}, {'action': 'action2', 'stepid': '2.0', 'result': 'result2', 'execution_type': '2.0'}, {'action': 'action3', 'stepid': '3.0', 'result': 'result3', 'execution_type': '3.0'}], [{'action': 'action1', 'stepid': '1.0', 'result': 'result1', 'execution_type': '1.0'}, {'action': 'action2', 'stepid': '2.0', 'result': 'result2', 'execution_type': '2.0'}]], 'summary': ['summary1', 'summary2']}]
 
-    aa =exportxml(cc)
+#    aa =exportxml(cc)
     
-    aa.export()
-#    bb = readexcel('D:/testexcel.xls')
-#    bb.read()
+#    aa.export()
+    bb = readexcel('testexcel.xls')
+    print bb.suitedis()
+    print bb.casedis()
+    print bb.datastep()
+    print bb.casecount(1, 8)
+    print bb.datacase()
+    print bb.case()
+    print bb.testsuite()
+    cc = exportxml(bb.testsuite())
+    cc.export()
 #    bb.casedis()
 #    bb.suitedis()
 #    bb.casestep()

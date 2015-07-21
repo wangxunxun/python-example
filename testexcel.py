@@ -5,12 +5,9 @@ edata = xlrd.open_workbook('testexcel.xls')
 table = edata.sheet_by_name("Sheet1")
 class testtest:
     
-    def suitedis(self):
-        
+    def suitedis(self):        
         j=1
-        dis =[]
-        
-
+        dis =[]        
         while j<table.nrows:
             if table.cell(j,0).value:
                 dis.append(j)
@@ -50,30 +47,22 @@ class testtest:
             if table.cell(l,6).value ==1.0:
                 end = end +1
             l=l+1
-
         return end - start
     
     def datacase(self):
         test =[]
         a = self.suitedis()
-        b = self.casedis()
-
-
         i =0
         while i<len(a)-1:
             bb=self.casecount(a[i], a[i+1])
-            test.append(bb)
-            
-            
+            test.append(bb)                        
             i=i+1
         return test
         
     def case(self):
         a =self.datacase()
-
         i=0
-        allcases=[]
-        
+        allcases=[]        
         while i<len(a):
             if i==0:
                 cases = []
@@ -88,8 +77,7 @@ class testtest:
                 cases.append(precondition)
                 cases.append(execution_type)
                 cases.append(importance)
-                cases.append(steps)
-                
+                cases.append(steps)                
                 allcases.append(cases)
                 
             else:
