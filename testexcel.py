@@ -3,8 +3,8 @@ import xlrd
 import exportxml
 
 
-data = xlrd.open_workbook('D:/testexcel.xls')
-table = data.sheet_by_name("Sheet1")
+edata = xlrd.open_workbook('D:/testexcel.xls')
+table = edata.sheet_by_name("Sheet1")
 def suitedis():
     j=1
     dis =[]
@@ -27,9 +27,17 @@ def casedis():
     print dis
     return dis
     
-def teststep():
-    a = [1, 4, 6, 9, 11]
-    b = [1, 6, 11]
+def datastep():
+    a = casedis()
+    test =[]
+    i =0
+    while i<len(a)-1:
+        test.append(data.read()[6][a[i]-1:a[i+1]-1])
+        i=i+1
+    return test
+
+
+    
 
 
 data = exportxml.readexcel("testexcel.xls")
@@ -38,7 +46,13 @@ print data.read()[0]
 a = suitedis()
 b = casedis()
 print a
-
+c = datastep()
+print len(c)
+print len(data.read()[1])
+print len(data.read()[2])
+print len(data.read()[3])
+print len(data.read()[4])
+print len(data.read()[5])
 i = 1
 
     
