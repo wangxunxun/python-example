@@ -13,7 +13,7 @@ options ={ 'py2exe':
 # Setup
 setup ( options  = options,
         windows = [{
-                        'script': 'example.py'
+                        'script': 'xmlUI.py'
                   }]
       )
 

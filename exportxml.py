@@ -292,6 +292,7 @@ class changetoxml:
         self.sheetname = sheetname
         self.output = output
         self.filename = filename
+        
     
     def run(self):
         self.importexcel = readexcel(self.excel,self.sheetname)
@@ -320,7 +321,7 @@ class exceloperate:
 
 if __name__ == "__main__":
     
-    exceloperate('D:/testexcel.xls').getSheetNames()
+
     testexcel = raw_input("Please input the path of your excel file(like 'D:/testexcel.xls'):\n")
     sheetname = raw_input("Please input your sheetname of testcase(like 'Sheet1'):\n")
     output = raw_input("Please input your output folder (like 'D:/testcase') :\n")
